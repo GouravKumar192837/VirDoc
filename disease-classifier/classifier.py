@@ -16,12 +16,23 @@ x_train,x_test,y_train,y_test= train_test_split(x,y,test_size=0.33,random_state=
 mnb= MultinomialNB()
 mnb.fit(x_train,y_train)
 
+##the following code is for after the disease has been predicted
+data1= pd.read_csv("datasets/MANUAL SET complete - Sheet1.csv")
+data= pd.DataFrame(data1)
+data=data.drop(['Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3','Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9','Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13','Unnamed: 14'],axis=1)
+data=data.drop([0])
+data3=data.set_index('DISEASE')
+
 '''
 ## predicting module
 sample_x=[]
-mnb.predict([sample_x])
+disease1=mnb.predict([sample_x])
+disease= disease1[0]
 '''
-
+## disease predicted has been stored and passed in below line...
+## disease_values= data3.loc[disease].values
+## link_internet= disease_values[0]
+## specalist = disease_values[1]
 '''
 ##for testing the test data
 test_data= pd.read_csv("datasets/Testing.csv")

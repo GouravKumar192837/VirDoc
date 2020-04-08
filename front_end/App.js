@@ -1,9 +1,9 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View,Linking} from 'react-native';
 import AppNavigator from './AppNavigator';
 import axios from 'axios';
 
-const serverUrl='http://192.168.43.192:5000';
+const serverUrl='http://cheersanimesh2.pythonanywhere.com/';
 const http = axios.create({
       baseURL:serverUrl,
 });
@@ -67,7 +67,7 @@ const http = axios.create({
         obj1,
       })
     }
-    predictModule =()=>
+    predictModule1=()=>
     {
        var{
        diseaseVar,
@@ -76,21 +76,47 @@ const http = axios.create({
        link,
        specalist,
        }=this.state
+       var obj2={}
        http.post('/',{
        'symp':diseaseVar,
-        }).then((response)=> obj1=response);
-      disease=obj1.disease;
-      link= obj1.link;
-      specalist= obj1.specalist
-      this.setState({
-               obj1,
-              diseaseVar,
-              disease,
-              link,
-              specalist,
+        }).then((response)=> obj2=response.data);
+         obj1=obj2
+         disease= obj2.disease
+         link= obj2.link
+         specalist=obj2.specalist
+          this.setState({
+                 obj1,
+                 disease,
+                 link,
+                 specalist,
+                 })
+     }
+    predictModule2=()=>
+    {
+    var{
+    diseaseVar,
+    obj1,
+    disease,
+    link,
+    specalist,
+    }=this.state
+    var obj2={}
+    http.get('/get').then((response) =>{this.state.obj1=response.data}).catch((error)=>{console.log(error)})
+             disease=obj1.disease
+             link= obj1.link
+             specalist= obj1.specalist
+             this.setState({
+             obj1,
+             disease,
+             link,
+             specalist,
             })
-
     }
+    getDirection=()=>{
+              Linking.openURL('https://stripiestmexican.htmlpasta.com/')
+            }
+
+
 ListViewItemSeparatorLine = () => {
       return (
         <View
@@ -110,10 +136,16 @@ ListViewItemSeparatorLine = () => {
             currentFriends: this.state.currentSymptom,
             possibleFriends: this.state.symptomsDict,
             diseaseVar: this.state.diseaseVar,
+            disease: this.state.disease,
+            link: this.state.link,
+            specalist:this.state.specalist,
+            obj1:this.state.obj1,
             addFriend: this.addSymptom,
             remSymptom: this.remSymptom,
-            predictModule: this.predictModule,
+            predictModule1: this.predictModule1,
+            predictModule2: this.predictModule2,
             listViewItemSeparatorLine: this.ListViewItemSeparatorLine,
+            getDirection: this.getDirection,
           } }
         />
       );

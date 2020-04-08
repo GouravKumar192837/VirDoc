@@ -9,13 +9,18 @@ from sklearn.model_selection import train_test_split
 import json
 from flask import Flask, request, jsonify
 app = Flask(__name__)
+results={}
 @app.route('/' , methods=['POST'])
 def predict():
-    data_json_temp = request.get_json()
-    data_json_string = data_json_temp['symp']
-    arr_json_string = data_json_string.split(';')
-    data = pd.read_csv("C:\\Users\\hp\\Desktop\\vir doc api\\Training.csv")
-    df = pd.DataFrame(data)
+    try:
+        data_json_temp = request.get_json()
+        data_json_string = data_json_temp['symp']
+        arr_json_string = data_json_string.split(';')
+        data = pd.read_csv("C:/Users/Animesh/Desktop/VirDoc/disease-classifier/datasets/Training.csv")
+        df = pd.DataFrame(data)
+    except KeyError:
+        results2={'link':'data_json_string'}
+        return jsonify(results2)
     cols = df.columns
     cols = cols[:-1]
     x = df[cols]
@@ -23,7 +28,7 @@ def predict():
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.33, random_state=42)
     mnb = MultinomialNB()
     mnb.fit(x_train, y_train)
-    data1 = pd.read_csv("C:\\Users\\hp\\Desktop\\vir doc api\\MANUAL SET complete - Sheet1.csv")
+    data1 = pd.read_csv("C:/Users/Animesh/Desktop/VirDoc/disease-classifier/MANUAL SET complete - Sheet1.csv")
     data = pd.DataFrame(data1)
     data = data.drop(['Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14'], axis=1)
     data = data.drop([0])
@@ -49,6 +54,15 @@ def predict():
     ### the module now converts the results into a JSON file
     results = {'disease': disease, 'link': link_internet, 'specalist': disease_values[1]}
     print(results)
+    with open("C:/Users/Animesh/Desktop/server_values.json",'w') as json_file:
+        json.dump(results,json_file)
+    return jsonify(results)
+@app.route('/get',methods=['GET'])
+def throw_json():
+    print("abc")
+    with open('C:/Users/Animesh/Desktop/server_values.json','r') as json_file:
+        results=json.load(json_file)
+    print(results)
     return jsonify(results)
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host= '0.0.0.0')
